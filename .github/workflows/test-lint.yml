@@ -55,18 +55,14 @@ jobs:
         with:
           ref: ${{ inputs.ref }}  # Explicitly define which commit to check out
           persist-credentials: false  # Don't persist credentials for subsequent actions
-      - name: Set up Python
-        uses: astral-sh/setup-uv@v4
-        with:
-          enable-cache: true
-          python-version: ${{ matrix.python-version }}
-
       - name: Install uv
-        uses: astral-sh/setup-uv@v4
+        uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
+          cache-dependency-glob: "uv.lock"
+          python-version: ${{ matrix.python-version }}
       - name: Sync dependencies from lock file
-        run: uv sync --dev
+        run: uv sync --frozen --all-extras --group dev
       - name: Run Unit tests
         id: tests
         run: uv run poe test-cov
@@ -83,15 +79,14 @@ jobs:
           ref: ${{ inputs.ref }}
           persist-credentials: false
 
-      - name: Set up Python
-        uses: astral-sh/setup-uv@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
-          python-version: ${{ matrix.python-version }}
-
-
+          cache-dependency-glob: "uv.lock"
+          python-version: '3.10'
       - name: Sync dependencies from lock file
-        run: uv sync --all-groups --all-extras --all-packages
+        run: uv sync --frozen --all-extras --group dev
 
       - name: Run lint
         id: lint
