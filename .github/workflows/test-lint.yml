@@ -59,12 +59,15 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
-        run: |
-          pip install --no-cache-dir hatch
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+      - name: Sync dependencies from lock file
+        run: uv sync --dev
       - name: Run Unit tests
         id: tests
-        run: hatch test tests --cover
+        run: uv run poe test-cov
         continue-on-error: false
   lint:
     name: Lint
@@ -82,13 +85,16 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-          cache: 'pip'
 
-      - name: Install dependencies
-        run: |
-          pip install --no-cache-dir hatch
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+
+      - name: Sync dependencies from lock file
+        run: uv sync --dev
 
       - name: Run lint
         id: lint
-        run: hatch run test-lint
+        run: uv run poe lint-check
         continue-on-error: false
