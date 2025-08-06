@@ -25,6 +25,17 @@ Please try to include as much information as you can. Details like these are inc
 * Anything unusual about your environment or deployment
 
 
+## Finding contributions to work on
+Looking at the existing issues is a great way to find something to contribute to. We label issues that are well-defined and ready for community contributions with the "ready for contribution" label.
+
+Check our [Ready for Contribution](../../issues?q=is%3Aissue%20state%3Aopen%20label%3A%22ready%20for%20contribution%22) issues for items you can work on.
+
+Before starting work on any issue:
+1. Check if someone is already assigned or working on it
+2. Comment on the issue to express your interest and ask any clarifying questions
+3. Wait for maintainer confirmation before beginning significant work
+
+
 ## Development Environment
 
 This project uses [hatchling](https://hatch.pypa.io/latest/build/#hatchling) as the build backend and [hatch](https://hatch.pypa.io/latest/) for development workflow management.
@@ -70,7 +81,7 @@ This project uses [hatchling](https://hatch.pypa.io/latest/build/#hatchling) as 
 
 ### Pre-commit Hooks
 
-We use [pre-commit](https://pre-commit.com/) to automatically run quality checks before each commit. The hook will run `hatch run format`, `hatch run lint`, `hatch run test`, and `hatch run cz check` on when you make a commit, ensuring code consistency.
+We use [pre-commit](https://pre-commit.com/) to automatically run quality checks before each commit. The hook will run `hatch run format`, `hatch run lint`, `hatch run test`, and `hatch run cz check` when you make a commit, ensuring code consistency.
 
 The pre-commit hook is installed with:
 
@@ -120,75 +131,6 @@ To send us a pull request, please:
 6. Commit to your branch using clear commit messages following the [Conventional Commits](https://www.conventionalcommits.org) specification.
 7. Send us a pull request, answering any default questions in the pull request interface.
 8. Pay attention to any automated CI failures reported in the pull request, and stay involved in the conversation.
-
-
-## Finding contributions to work on
-Looking at the existing issues is a great way to find something to contribute to.
-
-You can check:
-- Our known bugs list in [Bug Reports](../../issues?q=is%3Aissue%20state%3Aopen%20label%3Abug) for issues that need fixing
-- Feature requests in [Feature Requests](../../issues?q=is%3Aissue%20state%3Aopen%20label%3Aenhancement) for new functionality to implement
-
-
-## Dependency Management with uv lock
-
-This project uses `uv lock` to ensure reproducible dependency resolution across all environments. The `uv.lock` file contains exact versions of all dependencies and **must be committed to git**.
-
-### For Developers
-
-**Initial Setup:**
-```bash
-# Install exact dependencies from lock file
-uv sync --dev
-```
-
-**Daily Development:**
-```bash
-# Use locked dependencies for all commands
-uv run poe test
-uv run poe lint
-uv run poe format
-```
-
-**Adding New Dependencies:**
-```bash
-# Add new dependency and update lock file
-uv add "new-package>=1.0.0"
-# The lock file is automatically updated
-git add pyproject.toml uv.lock
-git commit -m "feat: add new-package dependency"
-```
-
-**Updating Dependencies:**
-```bash
-# Update to latest compatible versions
-uv lock
-
-# Or upgrade to latest versions (major updates)
-uv lock --upgrade
-
-# Always commit lock file changes
-git add uv.lock
-git commit -m "chore: update dependencies"
-```
-
-### Why Lock Files Matter
-
-- **Reproducible Builds**: Same exact dependencies across dev, CI, and production
-- **Faster CI**: Pre-resolved dependencies eliminate resolution time
-- **Security**: Pinned versions prevent supply chain attacks
-- **Team Consistency**: Everyone gets identical dependency trees
-
-### Lock File Commands
-
-| Command | Purpose |
-|---------|---------|
-| `uv sync --dev` | Install exact dependencies from lock file |
-| `uv sync` | Install production dependencies only |
-| `uv lock` | Update lock file with latest compatible versions |
-| `uv lock --upgrade` | Upgrade all dependencies to latest versions |
-
-**Important**: Always commit `uv.lock` changes alongside `pyproject.toml` changes!
 
 
 ## Code of Conduct
