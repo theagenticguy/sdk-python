@@ -2,7 +2,7 @@
 
 from typing import Any
 
-from strands.types.content import Message
+from .content import Message
 
 
 class EventLoopException(Exception):
