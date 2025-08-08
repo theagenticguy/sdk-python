@@ -9,6 +9,8 @@ from typing import Literal, Optional
 
 from typing_extensions import TypedDict
 
+from .citations import CitationsConfig
+
 DocumentFormat = Literal["pdf", "csv", "doc", "docx", "xls", "xlsx", "html", "txt", "md"]
 """Supported document formats."""
 
@@ -23,17 +25,7 @@ class DocumentSource(TypedDict):
     bytes: bytes
 
 
-class CitationsConfig(TypedDict):
-    """Configuration for enabling citations on documents.
-
-    Attributes:
-        enabled: Whether citations are enabled for this document.
-    """
-
-    enabled: bool
-
-
-class DocumentContent(TypedDict):
+class DocumentContent(TypedDict, total=False):
     """A document to include in a message.
 
     Attributes:
@@ -46,6 +38,7 @@ class DocumentContent(TypedDict):
     name: str
     source: DocumentSource
     citations: Optional[CitationsConfig]
+    context: Optional[str]
 
 
 ImageFormat = Literal["png", "jpeg", "gif", "webp"]
