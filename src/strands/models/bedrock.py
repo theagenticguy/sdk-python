@@ -392,7 +392,10 @@ class BedrockModel(Model):
         """
         if self._has_citations_config(messages):
             model_id = self.config["model_id"]
-            if model_id not in CITATION_SUPPORTED_MODELS:
+            # Bedrock model IDs may include a cross-region prefix (e.g., "us.") before the model ID.
+            # Treat a model as supported if its ID ends with any of the supported model IDs.
+            is_supported = any(model_id.endswith(supported_id) for supported_id in CITATION_SUPPORTED_MODELS)
+            if not is_supported:
                 raise UnsupportedModelCitationsException(model_id, CITATION_SUPPORTED_MODELS)
 
     @override
