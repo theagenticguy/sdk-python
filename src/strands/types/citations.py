@@ -1,4 +1,7 @@
-"""Citation types for Amazon Bedrock API."""
+"""Citation type definitions for the SDK.
+
+These types are modeled after the Bedrock API.
+"""
 
 from typing import List, Union
 
