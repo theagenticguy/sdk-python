@@ -10,4 +10,4 @@ __pycache__*
 .vscode
 dist
 repl_state
-uv.lock
+.kiro
