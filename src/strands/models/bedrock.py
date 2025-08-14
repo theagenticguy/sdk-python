@@ -21,7 +21,6 @@ from ..types.content import ContentBlock, Message, Messages
 from ..types.exceptions import (
     ContextWindowOverflowException,
     ModelThrottledException,
-    UnsupportedModelCitationsException,
 )
 from ..types.streaming import StreamEvent
 from ..types.tools import ToolResult, ToolSpec
@@ -36,15 +35,6 @@ BEDROCK_CONTEXT_WINDOW_OVERFLOW_MESSAGES = [
     "Input is too long for requested model",
     "input length and `max_tokens` exceed context limit",
     "too many total text bytes",
-]
-
-# Model IDs that support citation functionality
-CITATION_SUPPORTED_MODELS = [
-    "anthropic.claude-3-5-sonnet-20241022-v2:0",
-    "anthropic.claude-3-7-sonnet-20250219-v1:0",
-    "anthropic.claude-opus-4-20250514-v1:0",
-    "anthropic.claude-sonnet-4-20250514-v1:0",
-    "anthropic.claude-opus-4-1-20250805-v1:0",
 ]
 
 T = TypeVar("T", bound=BaseModel)
@@ -362,42 +352,6 @@ class BedrockModel(Model):
 
         return events
 
-    def _has_citations_config(self, messages: Messages) -> bool:
-        """Check if any message contains document content with citations enabled.
-
-        Args:
-            messages: List of messages to check for citations config.
-
-        Returns:
-            True if any message contains a document with citations enabled, False otherwise.
-        """
-        for message in messages:
-            for content_block in message["content"]:
-                if "document" in content_block:
-                    document = content_block["document"]
-                    if "citations" in document and document["citations"] is not None:
-                        citations_config = document["citations"]
-                        if "enabled" in citations_config and citations_config["enabled"]:
-                            return True
-        return False
-
-    def _validate_citations_support(self, messages: Messages) -> None:
-        """Validate that the current model supports citations if citations are requested.
-
-        Args:
-            messages: List of messages to check for citations config.
-
-        Raises:
-            UnsupportedModelCitationsException: If citations are requested but the model doesn't support them.
-        """
-        if self._has_citations_config(messages):
-            model_id = self.config["model_id"]
-            # Bedrock model IDs may include a cross-region prefix (e.g., "us.") before the model ID.
-            # Treat a model as supported if its ID ends with any of the supported model IDs.
-            is_supported = any(model_id.endswith(supported_id) for supported_id in CITATION_SUPPORTED_MODELS)
-            if not is_supported:
-                raise UnsupportedModelCitationsException(model_id, CITATION_SUPPORTED_MODELS)
-
     @override
     async def stream(
         self,
@@ -426,7 +380,6 @@ class BedrockModel(Model):
             UnsupportedModelCitationsException: If citations are requested but the model doesn't support them.
         """
         # Validate citations support before starting the thread (fail fast in async context)
-        self._validate_citations_support(messages)
 
         def callback(event: Optional[StreamEvent] = None) -> None:
             loop.call_soon_threadsafe(queue.put_nowait, event)

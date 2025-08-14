@@ -5,6 +5,7 @@ import logging
 from typing import Any, AsyncGenerator, AsyncIterable, Optional
 
 from ..models.model import Model
+from ..types.citations import CitationsContentBlock
 from ..types.content import ContentBlock, Message, Messages
 from ..types.streaming import (
     ContentBlockDeltaEvent,
@@ -175,7 +176,7 @@ def handle_content_block_stop(state: dict[str, Any]) -> dict[str, Any]:
     current_tool_use = state["current_tool_use"]
     text = state["text"]
     reasoning_text = state["reasoningText"]
-    citations_content = state["citationsContent"] if "citationsContent" in state else []
+    citations_content = state["citationsContent"]
 
     if current_tool_use:
         if "input" not in current_tool_use:
@@ -200,6 +201,10 @@ def handle_content_block_stop(state: dict[str, Any]) -> dict[str, Any]:
     elif text:
         content.append({"text": text})
         state["text"] = ""
+        if citations_content:
+            citations_block: CitationsContentBlock = {"citations": citations_content}
+            content.append({"citationsContent": citations_block})
+            state["citationsContent"] = []
 
     elif reasoning_text:
         content.append(
@@ -213,18 +218,6 @@ def handle_content_block_stop(state: dict[str, Any]) -> dict[str, Any]:
             }
         )
         state["reasoningText"] = ""
-
-    # Handle citations_content independently - not as elif since we can have both text and citations
-    if citations_content:
-        # Convert CitationsDelta objects back to CitationsContentBlock format
-        # that matches non-streaming behavior
-        from ..types.citations import CitationsContentBlock
-
-        citations_block: CitationsContentBlock = {
-            "citations": citations_content  # citations_content contains CitationsDelta objects
-        }
-        content.append({"citationsContent": citations_block})
-        state["citationsContent"] = []
 
     return state
 

@@ -28,7 +28,11 @@ def non_streaming_model():
 
 @pytest.fixture
 def streaming_agent(streaming_model, system_prompt):
-    return Agent(model=streaming_model, system_prompt=system_prompt, load_tools_from_directory=False)
+    return Agent(
+        model=streaming_model,
+        system_prompt=system_prompt,
+        load_tools_from_directory=False,
+    )
 
 
 @pytest.fixture
