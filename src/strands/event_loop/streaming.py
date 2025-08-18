@@ -41,10 +41,12 @@ def remove_blank_messages_content_text(messages: Messages) -> Messages:
         # only modify assistant messages
         if "role" in message and message["role"] != "assistant":
             continue
-
         if "content" in message:
             content = message["content"]
             has_tool_use = any("toolUse" in item for item in content)
+            if len(content) == 0:
+                content.append({"text": "[blank text]"})
+                continue
 
             if has_tool_use:
                 # Remove blank 'text' items for assistant messages
@@ -288,7 +290,6 @@ async def process_stream(chunks: AsyncIterable[StreamEvent]) -> AsyncGenerator[d
 
     async for chunk in chunks:
         yield {"callback": {"event": chunk}}
-
         if "messageStart" in chunk:
             state["message"] = handle_message_start(chunk["messageStart"], state["message"])
         elif "contentBlockStart" in chunk:
@@ -328,7 +329,6 @@ async def stream_messages(
     logger.debug("model=<%s> | streaming messages", model)
 
     messages = remove_blank_messages_content_text(messages)
-
     chunks = model.stream(messages, tool_specs if tool_specs else None, system_prompt)
 
     async for event in process_stream(chunks):
