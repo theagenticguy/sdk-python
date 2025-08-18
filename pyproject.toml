@@ -68,7 +68,7 @@ docs = [
     "sphinx-autodoc-typehints>=1.12.0,<2.0.0",
 ]
 litellm = [
-    "litellm>=1.72.6,<1.73.0",
+    "litellm>=1.73.1,<2.0.0",
 ]
 llamaapi = [
     "llama-api-client>=0.1.0,<1.0.0",
@@ -92,7 +92,9 @@ writer = [
 sagemaker = [
     "boto3>=1.26.0,<2.0.0",
     "botocore>=1.29.0,<2.0.0",
-    "boto3-stubs[sagemaker-runtime]>=1.26.0,<2.0.0"
+    "boto3-stubs[sagemaker-runtime]>=1.26.0,<2.0.0",
+    # uses OpenAI as part of the implementation
+    "openai>=1.68.0,<2.0.0",
 ]
 
 a2a = [
@@ -234,8 +236,8 @@ test-integ = [
     "hatch test tests_integ {args}"
 ]
 prepare = [
-    "hatch fmt --linter",
     "hatch fmt --formatter",
+    "hatch fmt --linter",
     "hatch run test-lint",
     "hatch test --all"
 ]

@@ -207,16 +207,18 @@ def handle_content_block_stop(state: dict[str, Any]) -> dict[str, Any]:
             state["citationsContent"] = []
 
     elif reasoning_text:
-        content.append(
-            {
-                "reasoningContent": {
-                    "reasoningText": {
-                        "text": state["reasoningText"],
-                        "signature": state["signature"],
-                    }
+        content_block: ContentBlock = {
+            "reasoningContent": {
+                "reasoningText": {
+                    "text": state["reasoningText"],
                 }
             }
-        )
+        }
+
+        if "signature" in state:
+            content_block["reasoningContent"]["reasoningText"]["signature"] = state["signature"]
+
+        content.append(content_block)
         state["reasoningText"] = ""
 
     return state
