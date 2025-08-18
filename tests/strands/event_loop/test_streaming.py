@@ -250,12 +250,14 @@ def test_handle_content_block_delta(event: ContentBlockDeltaEvent, state, exp_up
                 "current_tool_use": {},
                 "text": "",
                 "reasoningText": "test",
+                "citationsContent": [],
             },
             {
                 "content": [{"reasoningContent": {"reasoningText": {"text": "test"}}}],
                 "current_tool_use": {},
                 "text": "",
                 "reasoningText": "",
+                "citationsContent": [],
             },
         ),
         # Empty
