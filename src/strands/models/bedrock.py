@@ -377,7 +377,6 @@ class BedrockModel(Model):
         Raises:
             ContextWindowOverflowException: If the input exceeds the model's context window.
             ModelThrottledException: If the model service is throttling requests.
-            UnsupportedModelCitationsException: If citations are requested but the model doesn't support them.
         """
 
         def callback(event: Optional[StreamEvent] = None) -> None:
