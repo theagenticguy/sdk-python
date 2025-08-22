@@ -379,7 +379,6 @@ class BedrockModel(Model):
             ModelThrottledException: If the model service is throttling requests.
             UnsupportedModelCitationsException: If citations are requested but the model doesn't support them.
         """
-        # Validate citations support before starting the thread (fail fast in async context)
 
         def callback(event: Optional[StreamEvent] = None) -> None:
             loop.call_soon_threadsafe(queue.put_nowait, event)
