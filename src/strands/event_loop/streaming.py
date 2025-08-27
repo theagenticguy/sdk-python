@@ -6,6 +6,7 @@ from typing import Any, AsyncGenerator, AsyncIterable, Optional
 
 from ..models.model import Model
 from ..types._events import (
+    CitationStreamEvent,
     ModelStopReason,
     ModelStreamChunkEvent,
     ModelStreamEvent,
@@ -146,7 +147,7 @@ def handle_content_block_delta(
             state["citationsContent"] = []
 
         state["citationsContent"].append(delta_content["citation"])
-        callback_event["callback"] = {"citation_metadata": delta_content["citation"], "delta": delta_content}
+        typed_event = CitationStreamEvent(delta=delta_content, citation=delta_content["citation"])
 
     elif "reasoningContent" in delta_content:
         if "text" in delta_content["reasoningContent"]:
