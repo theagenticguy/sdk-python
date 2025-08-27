@@ -22,7 +22,7 @@ from ..types.exceptions import (
     ContextWindowOverflowException,
     ModelThrottledException,
 )
-from ..types.streaming import StreamEvent
+from ..types.streaming import CitationsDelta, StreamEvent
 from ..types.tools import ToolResult, ToolSpec
 from .model import Model
 
@@ -567,7 +567,6 @@ class BedrockModel(Model):
 
                 for citation in content["citationsContent"]["citations"]:
                     # Then emit citation metadata (for structure)
-                    from ..types.streaming import CitationsDelta
 
                     citation_metadata: CitationsDelta = {
                         "title": citation["title"],
